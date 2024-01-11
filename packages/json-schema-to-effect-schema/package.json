@@ -1,6 +1,6 @@
 {
     "name": "json-schema-to-effect-schema",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Converts a json schema to an effect schema",
     "homepage": "https://github.com/leonitousconforti/effect-schema-migrators",
     "repository": {

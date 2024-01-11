@@ -1,0 +1,17 @@
+{
+  "name": "json-schema-to-effect-schema",
+  "entries": [
+    {
+      "version": "0.0.2",
+      "tag": "json-schema-to-effect-schema_v0.0.2",
+      "date": "Thu, 11 Jan 2024 20:33:15 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "initial release"
+          }
+        ]
+      }
+    }
+  ]
+}

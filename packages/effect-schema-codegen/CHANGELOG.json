@@ -1,0 +1,17 @@
+{
+  "name": "effect-schema-codegen",
+  "entries": [
+    {
+      "version": "0.0.2",
+      "tag": "effect-schema-codegen_v0.0.2",
+      "date": "Thu, 11 Jan 2024 20:33:15 GMT",
+      "comments": {
+        "patch": [
+          {
+            "comment": "initial release"
+          }
+        ]
+      }
+    }
+  ]
+}
