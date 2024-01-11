@@ -12,7 +12,7 @@ Why not implement this using [swagger-codegen](https://github.com/swagger-api/sw
 
 ## Example migrating the Moby project's swagger2.0 document to an effect schema
 
-The Moby projects swagger2.0 document is over 10K lines full of documentation, types, routes, and examples that I would like to have in one of [my projects](https://github.com/leonitousconforti/the-moby-effect) as an @effect/schema. Let's see how we can migrate their swagger2.0 document
+The Moby projects swagger2.0 document is over 10K lines full of documentation, types, routes, and examples that I would like to have in one of [my projects](https://github.com/leonitousconforti/the-moby-effect) as an @effect/schema. Let's see how we can migrate their swagger2.0 document to a starting point for an @effect/schema
 
 ## Goals :white_check_mark:
 
@@ -22,7 +22,7 @@ The Moby projects swagger2.0 document is over 10K lines full of documentation, t
 
 ## Non-Goals :wastebasket:
 
-- While the effect-schema-codegen package might work with any AST you throw at it, it is really designed to support ASTs generated from other schema types like json or swagger documents. These other schema formats can't support the more complex features of @effect/schema, so most of the time I pretend like they are there. For example, it will throw an error if you give it an AST transform node without an identifier annotation. This is intention. I have some ideas about how it could generate the correct code for an arbitrary transform node but thats not the point of the project. Non of these migrators are meant to be used like EffectSchema->OtherSchemaType->EffectSchema, they are just meant to assist with the initial migration from OtherSchema->EffectSchema
+- While the effect-schema-codegen package might work with any AST you throw at it, it is really designed to support ASTs generated from other schema types like json or swagger documents. These other schema formats can't support the more complex features of @effect/schema, so most of the time I pretend like they aren't there. For example, it will throw an error if you give it an AST transform node without an identifier annotation. This is intentional. I have some ideas about how it could generate the correct code for an arbitrary transform node but thats not the point of the project. Non of these migrators are meant to be used like EffectSchema->OtherSchemaType->EffectSchema, they are just meant to assist with the initial migration from OtherSchema->EffectSchema
 
 ## Todo/Future :bulb:
 
