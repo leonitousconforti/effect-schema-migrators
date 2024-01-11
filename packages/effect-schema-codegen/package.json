@@ -1,6 +1,6 @@
 {
     "name": "effect-schema-codegen",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "description": "Converts an effect schema AST back to TS code",
     "homepage": "https://github.com/leonitousconforti/effect-schema-migrators",
     "repository": {
