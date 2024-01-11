@@ -1,8 +1,4 @@
-# effect-schema-codegen
-
-Migration and codegen utilities for @effect/schema
-
-## Problem trying to solve
+# effect-schema-migrators
 
 You already have a schema defined for your project, but are interested in using @effect/schema for your single source of truth! Manually converting large schemas can be cumbersome and tiring, wouldn't it be great if you could generate a starting point for your @effect/schema based on your current definitions?
 

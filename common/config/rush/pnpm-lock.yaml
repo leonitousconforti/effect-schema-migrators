@@ -519,7 +519,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 20.10.8
+      '@types/node': 20.11.0
       chalk: 4.1.2
       jest-message-util: 29.7.0
       jest-util: 29.7.0
@@ -538,24 +538,24 @@ packages:
       '@jest/console': 29.7.0
       '@jest/reporters': 29.5.0
       '@jest/test-result': 29.7.0
-      '@jest/transform': 29.7.0
+      '@jest/transform': 29.5.0
       '@jest/types': 29.6.3
-      '@types/node': 20.10.8
+      '@types/node': 20.11.0
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       ci-info: 3.9.0
       exit: 0.1.2
       graceful-fs: 4.2.11
       jest-changed-files: 29.7.0
-      jest-config: 29.5.0_@types+node@20.10.8
+      jest-config: 29.5.0_@types+node@20.11.0
       jest-haste-map: 29.7.0
       jest-message-util: 29.7.0
       jest-regex-util: 29.6.3
-      jest-resolve: 29.7.0
+      jest-resolve: 29.5.0
       jest-resolve-dependencies: 29.7.0
       jest-runner: 29.7.0
       jest-runtime: 29.7.0
-      jest-snapshot: 29.7.0
+      jest-snapshot: 29.5.0
       jest-util: 29.7.0
       jest-validate: 29.7.0
       jest-watcher: 29.7.0
@@ -575,7 +575,7 @@ packages:
     dependencies:
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.10.8
+      '@types/node': 20.11.0
       jest-mock: 29.7.0
     dev: true
 
@@ -602,7 +602,7 @@ packages:
     dependencies:
       '@jest/types': 29.6.3
       '@sinonjs/fake-timers': 10.3.0
-      '@types/node': 20.10.8
+      '@types/node': 20.11.0
       jest-message-util: 29.7.0
       jest-mock: 29.7.0
       jest-util: 29.7.0
@@ -632,10 +632,10 @@ packages:
       '@bcoe/v8-coverage': 0.2.3
       '@jest/console': 29.7.0
       '@jest/test-result': 29.7.0
-      '@jest/transform': 29.7.0
+      '@jest/transform': 29.5.0
       '@jest/types': 29.6.3
       '@jridgewell/trace-mapping': 0.3.20
-      '@types/node': 20.10.8
+      '@types/node': 20.11.0
       chalk: 4.1.2
       collect-v8-coverage: 1.0.2
       exit: 0.1.2
@@ -746,7 +746,7 @@ packages:
       '@jest/schemas': 29.6.3
       '@types/istanbul-lib-coverage': 2.0.6
       '@types/istanbul-reports': 3.0.4
-      '@types/node': 20.10.8
+      '@types/node': 20.11.0
       '@types/yargs': 17.0.32
       chalk: 4.1.2
     dev: true
@@ -1086,7 +1086,7 @@ packages:
   /@types/graceful-fs/4.1.9:
     resolution: {integrity: sha512-olP3sd1qOEe5dXTSaFvQG+02VdRXcdytWLAZsAq1PecU8uqQAhkrnbli7DagjtXKW/Bl7YJbUsa8MPcuc8LHEQ==}
     dependencies:
-      '@types/node': 20.10.8
+      '@types/node': 20.11.0
     dev: true
 
   /@types/heft-jest/1.0.6:
@@ -1120,12 +1120,6 @@ packages:
 
   /@types/json-schema/7.0.15:
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
-    dev: true
-
-  /@types/node/20.10.8:
-    resolution: {integrity: sha512-f8nQs3cLxbAFc00vEU59yf9UyGUftkPaLGfvbVOIDdx2i1b8epBqj2aNGyP19fiyXWvlmZ7qC1XLjAzw/OKIeA==}
-    dependencies:
-      undici-types: 5.26.5
     dev: true
 
   /@types/node/20.11.0:
@@ -1846,7 +1840,7 @@ packages:
       object.assign: 4.1.5
       regexp.prototype.flags: 1.5.1
       safe-array-concat: 1.0.1
-      safe-regex-test: 1.0.1
+      safe-regex-test: 1.0.2
       string.prototype.trim: 1.2.8
       string.prototype.trimend: 1.0.7
       string.prototype.trimstart: 1.0.7
@@ -2723,7 +2717,7 @@ packages:
       '@jest/expect': 29.7.0
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.10.8
+      '@types/node': 20.11.0
       chalk: 4.1.2
       co: 4.6.0
       dedent: 1.5.1
@@ -2739,46 +2733,6 @@ packages:
       pure-rand: 6.0.4
       slash: 3.0.0
       stack-utils: 2.0.6
-    transitivePeerDependencies:
-      - babel-plugin-macros
-      - supports-color
-    dev: true
-
-  /jest-config/29.5.0_@types+node@20.10.8:
-    resolution: {integrity: sha512-kvDUKBnNJPNBmFFOhDbm59iu1Fii1Q6SxyhXfvylq3UTHbg6o7j/g8k2dZyXWLvfdKB1vAPxNZnMgtKJcmu3kA==}
-    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
-    peerDependencies:
-      '@types/node': '*'
-      ts-node: '>=9.0.0'
-    peerDependenciesMeta:
-      '@types/node':
-        optional: true
-      ts-node:
-        optional: true
-    dependencies:
-      '@babel/core': 7.23.7
-      '@jest/test-sequencer': 29.7.0
-      '@jest/types': 29.6.3
-      '@types/node': 20.10.8
-      babel-jest: 29.7.0_@babel+core@7.23.7
-      chalk: 4.1.2
-      ci-info: 3.9.0
-      deepmerge: 4.3.1
-      glob: 7.2.3
-      graceful-fs: 4.2.11
-      jest-circus: 29.7.0
-      jest-environment-node: 29.7.0
-      jest-get-type: 29.6.3
-      jest-regex-util: 29.6.3
-      jest-resolve: 29.7.0
-      jest-runner: 29.7.0
-      jest-util: 29.7.0
-      jest-validate: 29.7.0
-      micromatch: 4.0.5
-      parse-json: 5.2.0
-      pretty-format: 29.7.0
-      slash: 3.0.0
-      strip-json-comments: 3.1.1
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -2810,7 +2764,7 @@ packages:
       jest-environment-node: 29.7.0
       jest-get-type: 29.6.3
       jest-regex-util: 29.6.3
-      jest-resolve: 29.7.0
+      jest-resolve: 29.5.0
       jest-runner: 29.7.0
       jest-util: 29.7.0
       jest-validate: 29.7.0
@@ -2859,7 +2813,7 @@ packages:
       '@jest/environment': 29.7.0
       '@jest/fake-timers': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.10.8
+      '@types/node': 20.11.0
       jest-mock: 29.7.0
       jest-util: 29.7.0
     dev: true
@@ -2875,7 +2829,7 @@ packages:
     dependencies:
       '@jest/types': 29.6.3
       '@types/graceful-fs': 4.1.9
-      '@types/node': 20.10.8
+      '@types/node': 20.11.0
       anymatch: 3.1.3
       fb-watchman: 2.0.2
       graceful-fs: 4.2.11
@@ -2926,7 +2880,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 20.10.8
+      '@types/node': 20.11.0
       jest-util: 29.7.0
     dev: true
 
@@ -3008,7 +2962,7 @@ packages:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.10.8
+      '@types/node': 20.11.0
       chalk: 4.1.2
       emittery: 0.13.1
       graceful-fs: 4.2.11
@@ -3039,7 +2993,7 @@ packages:
       '@jest/test-result': 29.7.0
       '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.10.8
+      '@types/node': 20.11.0
       chalk: 4.1.2
       cjs-module-lexer: 1.2.3
       collect-v8-coverage: 1.0.2
@@ -3069,7 +3023,7 @@ packages:
       '@babel/traverse': 7.23.7
       '@babel/types': 7.23.6
       '@jest/expect-utils': 29.7.0
-      '@jest/transform': 29.7.0
+      '@jest/transform': 29.5.0
       '@jest/types': 29.6.3
       '@types/babel__traverse': 7.20.5
       '@types/prettier': 2.7.3
@@ -3122,7 +3076,7 @@ packages:
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
       '@jest/types': 29.6.3
-      '@types/node': 20.10.8
+      '@types/node': 20.11.0
       chalk: 4.1.2
       ci-info: 3.9.0
       graceful-fs: 4.2.11
@@ -3147,7 +3101,7 @@ packages:
     dependencies:
       '@jest/test-result': 29.7.0
       '@jest/types': 29.6.3
-      '@types/node': 20.10.8
+      '@types/node': 20.11.0
       ansi-escapes: 4.3.2
       chalk: 4.1.2
       emittery: 0.13.1
@@ -3159,7 +3113,7 @@ packages:
     resolution: {integrity: sha512-eIz2msL/EzL9UFTFFx7jBTkeZfku0yUAyZZZmJ93H2TYEiroIx2PQjEXcwYtYl8zXCxb+PAmA2hLIt/6ZEkPHw==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
     dependencies:
-      '@types/node': 20.10.8
+      '@types/node': 20.11.0
       jest-util: 29.7.0
       merge-stream: 2.0.0
       supports-color: 8.1.1
@@ -3755,8 +3709,8 @@ packages:
       isarray: 2.0.5
     dev: true
 
-  /safe-regex-test/1.0.1:
-    resolution: {integrity: sha512-Y5NejJTTliTyY4H7sipGqY+RX5P87i3F7c4Rcepy72nq+mNLhIsD0W4c7kEmduMDQCSqtPsXPlSTsFhh2LQv+g==}
+  /safe-regex-test/1.0.2:
+    resolution: {integrity: sha512-83S9w6eFq12BBIJYvjMux6/dkirb8+4zJRA9cxNBVb7Wq5fJBW+Xze48WqR8pxua7bDuAaaAxtVVd4Idjp1dBQ==}
     engines: {node: '>= 0.4'}
     dependencies:
       call-bind: 1.0.5
