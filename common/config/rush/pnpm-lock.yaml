@@ -45,7 +45,13 @@ importers:
 
   ../../packages/json-schema-to-effect-schema:
     specifiers:
+      '@effect/cli': ~0.28.5
+      '@effect/platform': ~0.41.0
+      '@effect/platform-node': ~0.41.0
+      '@effect/printer': ~0.30.3
+      '@effect/printer-ansi': ~0.31.3
       '@effect/schema': 0.59.1
+      '@effect/typeclass': ~0.22.3
       '@rushstack/eslint-config': 3.5.1
       '@rushstack/heft': 0.63.6
       '@rushstack/heft-jest-plugin': 0.10.8
@@ -54,6 +60,7 @@ importers:
       '@types/heft-jest': 1.0.6
       '@types/node': 20.11.0
       effect: 2.0.3
+      effect-schema-codegen: workspace:*
       eslint: 8.56.0
       eslint-config-prettier: 9.1.0
       eslint-plugin-prettier: 5.1.3
@@ -62,6 +69,14 @@ importers:
       prettier: 3.1.1
       tsconfig-rig: workspace:*
       typescript: 5.3.3
+    dependencies:
+      '@effect/cli': 0.28.5_bocmorgubpdqwmfptmedv5kl3u
+      '@effect/platform': 0.41.0_igmw6ahuldm5zo2sqyzcss7gom
+      '@effect/platform-node': 0.41.0_wtlkeelmapjwjiun7iffowz5bq
+      '@effect/printer': 0.30.3_dhwl64zc5vfwxrs5twook3cdmm
+      '@effect/printer-ansi': 0.31.3_dhwl64zc5vfwxrs5twook3cdmm
+      '@effect/typeclass': 0.22.3_effect@2.0.3
+      effect-schema-codegen: link:../effect-schema-codegen
     devDependencies:
       '@effect/schema': 0.59.1_kv5cdhxp5nxcq4u6talfpyu5mi
       '@rushstack/eslint-config': 3.5.1_xdgzedli73k7lw4xlyzszm74om
@@ -70,6 +85,57 @@ importers:
       '@rushstack/heft-lint-plugin': 0.2.16_lrtydtwltc6gxl6c2z7a4ojgjq
       '@rushstack/heft-typescript-plugin': 0.2.16_lrtydtwltc6gxl6c2z7a4ojgjq
       '@types/heft-jest': 1.0.6
+      '@types/node': 20.11.0
+      effect: 2.0.3
+      eslint: 8.56.0
+      eslint-config-prettier: 9.1.0_eslint@8.56.0
+      eslint-plugin-prettier: 5.1.3_glhtlnotbb6crparhn2ogh22s4
+      eslint-plugin-unicorn: 50.0.1_eslint@8.56.0
+      fast-check: 3.15.0
+      prettier: 3.1.1
+      tsconfig-rig: link:../tsconfig-rig
+      typescript: 5.3.3
+
+  ../../packages/swagger2-to-effect-schema:
+    specifiers:
+      '@effect/cli': ~0.28.5
+      '@effect/platform': ~0.41.0
+      '@effect/platform-node': ~0.41.0
+      '@effect/printer': ~0.30.3
+      '@effect/printer-ansi': ~0.31.3
+      '@effect/schema': 0.59.1
+      '@effect/typeclass': ~0.22.3
+      '@rushstack/eslint-config': 3.5.1
+      '@rushstack/heft': 0.63.6
+      '@rushstack/heft-jest-plugin': 0.10.8
+      '@rushstack/heft-lint-plugin': 0.2.16
+      '@rushstack/heft-typescript-plugin': 0.2.16
+      '@types/node': 20.11.0
+      effect: 2.0.3
+      effect-schema-codegen: workspace:*
+      eslint: 8.56.0
+      eslint-config-prettier: 9.1.0
+      eslint-plugin-prettier: 5.1.3
+      eslint-plugin-unicorn: 50.0.1
+      fast-check: 3.15.0
+      prettier: 3.1.1
+      tsconfig-rig: workspace:*
+      typescript: 5.3.3
+    dependencies:
+      '@effect/cli': 0.28.5_bocmorgubpdqwmfptmedv5kl3u
+      '@effect/platform': 0.41.0_igmw6ahuldm5zo2sqyzcss7gom
+      '@effect/platform-node': 0.41.0_wtlkeelmapjwjiun7iffowz5bq
+      '@effect/printer': 0.30.3_dhwl64zc5vfwxrs5twook3cdmm
+      '@effect/printer-ansi': 0.31.3_dhwl64zc5vfwxrs5twook3cdmm
+      '@effect/typeclass': 0.22.3_effect@2.0.3
+      effect-schema-codegen: link:../effect-schema-codegen
+    devDependencies:
+      '@effect/schema': 0.59.1_kv5cdhxp5nxcq4u6talfpyu5mi
+      '@rushstack/eslint-config': 3.5.1_xdgzedli73k7lw4xlyzszm74om
+      '@rushstack/heft': 0.63.6_@types+node@20.11.0
+      '@rushstack/heft-jest-plugin': 0.10.8_lrtydtwltc6gxl6c2z7a4ojgjq
+      '@rushstack/heft-lint-plugin': 0.2.16_lrtydtwltc6gxl6c2z7a4ojgjq
+      '@rushstack/heft-typescript-plugin': 0.2.16_lrtydtwltc6gxl6c2z7a4ojgjq
       '@types/node': 20.11.0
       effect: 2.0.3
       eslint: 8.56.0
@@ -431,6 +497,68 @@ packages:
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
     dev: true
 
+  /@effect/cli/0.28.5_bocmorgubpdqwmfptmedv5kl3u:
+    resolution: {integrity: sha512-C1j1wFTBLHZoHL3tsoVecQIfulys7CXZsjDrPLvHc8ldt8hB4QAkDmZnqLOYS7amS5dQmmVGI+F9gQl0toMjYQ==}
+    peerDependencies:
+      '@effect/platform': ^0.41.0
+      '@effect/printer': ^0.30.3
+      '@effect/printer-ansi': ^0.31.3
+      '@effect/schema': ^0.59.1
+      effect: ^2.0.3
+    dependencies:
+      '@effect/platform': 0.41.0_igmw6ahuldm5zo2sqyzcss7gom
+      '@effect/printer': 0.30.3_dhwl64zc5vfwxrs5twook3cdmm
+      '@effect/printer-ansi': 0.31.3_dhwl64zc5vfwxrs5twook3cdmm
+      '@effect/schema': 0.59.1_kv5cdhxp5nxcq4u6talfpyu5mi
+      effect: 2.0.3
+    dev: false
+
+  /@effect/platform-node/0.41.0_wtlkeelmapjwjiun7iffowz5bq:
+    resolution: {integrity: sha512-sZDL2bHG5uW0cpOD1qyZ8UvadjLcRHIbRNaSRnM59FTIhhHtESA6mFJtOethv3q/ubfR2EZgQnFR35Zm8rFWSA==}
+    peerDependencies:
+      '@effect/platform': ^0.41.0
+      effect: ^2.0.3
+    dependencies:
+      '@effect/platform': 0.41.0_igmw6ahuldm5zo2sqyzcss7gom
+      effect: 2.0.3
+      mime: 3.0.0
+      multipasta: 0.1.21
+    dev: false
+
+  /@effect/platform/0.41.0_igmw6ahuldm5zo2sqyzcss7gom:
+    resolution: {integrity: sha512-iR5sFcFubZRLTsvZiL6gOlIvD/FPFq47t2D+ju8bxfO7I5ZwapoogHWSGOU1PrhvRZNplPxJiUK18miNVi0ZFg==}
+    peerDependencies:
+      '@effect/schema': ^0.59.1
+      effect: ^2.0.3
+    dependencies:
+      '@effect/schema': 0.59.1_kv5cdhxp5nxcq4u6talfpyu5mi
+      effect: 2.0.3
+      find-my-way-ts: 0.1.1
+      multipasta: 0.1.21
+      path-browserify: 1.0.1
+    dev: false
+
+  /@effect/printer-ansi/0.31.3_dhwl64zc5vfwxrs5twook3cdmm:
+    resolution: {integrity: sha512-vB3V0UHacUcW46rmXQwHwuOskgrobSCMB553dTpZWkeXKp1JmDF9crwzks6oT5M0DRaV82Xl+K7YGj8z8SXlgA==}
+    peerDependencies:
+      '@effect/typeclass': ^0.22.3
+      effect: ^2.0.3
+    dependencies:
+      '@effect/printer': 0.30.3_dhwl64zc5vfwxrs5twook3cdmm
+      '@effect/typeclass': 0.22.3_effect@2.0.3
+      effect: 2.0.3
+    dev: false
+
+  /@effect/printer/0.30.3_dhwl64zc5vfwxrs5twook3cdmm:
+    resolution: {integrity: sha512-G4Yy42JOn7gH6CjPL3aYe5YTwkJ2O9UI0EcnReJIHNwLuXo6iMHabW4yx9hBjq+sNoKcbGzxAAD8CzFfK8JJVg==}
+    peerDependencies:
+      '@effect/typeclass': ^0.22.3
+      effect: ^2.0.3
+    dependencies:
+      '@effect/typeclass': 0.22.3_effect@2.0.3
+      effect: 2.0.3
+    dev: false
+
   /@effect/schema/0.59.1_kv5cdhxp5nxcq4u6talfpyu5mi:
     resolution: {integrity: sha512-dighL1fSjOLNupETYaN4hvUo9zxvdi4w+lgJ9lHKYFZapaFxR2f8ZKB2WunsSGnF5mCyWLDS3GMtfLeqz2I2ug==}
     peerDependencies:
@@ -439,7 +567,14 @@ packages:
     dependencies:
       effect: 2.0.3
       fast-check: 3.15.0
-    dev: true
+
+  /@effect/typeclass/0.22.3_effect@2.0.3:
+    resolution: {integrity: sha512-foAutjClTUWOCP0OatMM2EqnFlWJRjAsp8lI322htCM7gdG2hQ7XySrGbfYciSkDB5T1e1fBYocWWYRIWTRgUA==}
+    peerDependencies:
+      effect: ^2.0.3
+    dependencies:
+      effect: 2.0.3
+    dev: false
 
   /@eslint-community/eslint-utils/4.4.0_eslint@8.56.0:
     resolution: {integrity: sha512-1/sA4dwrzBAyeUoQ6oxahHKmrZvsnLCg4RfxW3ZFGGmQkSNQPFNLV9CUEFQP1x9EYXHTo5p6xdhZM1Ne9p/AfA==}
@@ -538,7 +673,7 @@ packages:
       '@jest/console': 29.7.0
       '@jest/reporters': 29.5.0
       '@jest/test-result': 29.7.0
-      '@jest/transform': 29.5.0
+      '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
       '@types/node': 20.11.0
       ansi-escapes: 4.3.2
@@ -551,11 +686,11 @@ packages:
       jest-haste-map: 29.7.0
       jest-message-util: 29.7.0
       jest-regex-util: 29.6.3
-      jest-resolve: 29.5.0
+      jest-resolve: 29.7.0
       jest-resolve-dependencies: 29.7.0
       jest-runner: 29.7.0
       jest-runtime: 29.7.0
-      jest-snapshot: 29.5.0
+      jest-snapshot: 29.7.0
       jest-util: 29.7.0
       jest-validate: 29.7.0
       jest-watcher: 29.7.0
@@ -632,7 +767,7 @@ packages:
       '@bcoe/v8-coverage': 0.2.3
       '@jest/console': 29.7.0
       '@jest/test-result': 29.7.0
-      '@jest/transform': 29.5.0
+      '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
       '@jridgewell/trace-mapping': 0.3.20
       '@types/node': 20.11.0
@@ -1790,7 +1925,6 @@ packages:
 
   /effect/2.0.3:
     resolution: {integrity: sha512-I/XvcbHypegNFWCr/arbfIR6pA+8JpSqv9wS4xOrgXypQMRj8H3wRorTcUiPmcQ0e6Ko67CdI2XZpjx7z0Ev/A==}
-    dev: true
 
   /electron-to-chromium/1.4.628:
     resolution: {integrity: sha512-2k7t5PHvLsufpP6Zwk0nof62yLOsCf032wZx7/q0mv8gwlXjhcxI3lz6f0jBr0GrnWKcm3burXzI3t5IrcdUxw==}
@@ -2140,7 +2274,10 @@ packages:
     engines: {node: '>=8.0.0'}
     dependencies:
       pure-rand: 6.0.4
-    dev: true
+
+  /fast-decode-uri-component/1.0.1:
+    resolution: {integrity: sha512-WKgKWg5eUxvRZGwW8FvfbaH7AXSh2cL+3j5fMGzUMCxWBJ3dV3a7Wz8y2f/uQ0e3B6WmodD3oS54jTQ9HVTIIg==}
+    dev: false
 
   /fast-deep-equal/3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==}
@@ -2169,6 +2306,12 @@ packages:
     resolution: {integrity: sha512-DCXu6Ifhqcks7TZKY3Hxp3y6qphY5SJZmrWMDrKcERSOXWQdMhU9Ig/PYrzyw/ul9jOIyh0N4M0tbC5hodg8dw==}
     dev: true
 
+  /fast-querystring/1.1.2:
+    resolution: {integrity: sha512-g6KuKWmFXc0fID8WWH0jit4g0AGBoJhCkJMb1RmbsSEUNvQ+ZC8D6CUZ+GtF8nMzSPXnhiePyyqqipzNNEnHjg==}
+    dependencies:
+      fast-decode-uri-component: 1.0.1
+    dev: false
+
   /fastq/1.16.0:
     resolution: {integrity: sha512-ifCoaXsDrsdkWTtiNJX5uzHDsrck5TzfKKDcuFFTIrrc/BS076qgEIfoIy1VeZqViznfKiysPYTh/QeHtnIsYA==}
     dependencies:
@@ -2194,6 +2337,12 @@ packages:
     dependencies:
       to-regex-range: 5.0.1
     dev: true
+
+  /find-my-way-ts/0.1.1:
+    resolution: {integrity: sha512-nXUdq29JRQ1tYa1/n+DHTVChMARJHz+gi7sDZibwQukzHP7Hrr6s+sxKbaIM8xB3LzhSBJy5yLb0JhIUmHmOiA==}
+    dependencies:
+      fast-querystring: 1.1.2
+    dev: false
 
   /find-up/4.1.0:
     resolution: {integrity: sha512-PpOwAdQ/YlXQ2vj8a3h8IipDuYRi3wceVQQGYWxNINccq40Anw7BlsEXCMbt1Zt+OLA6Fq9suIpIWD0OsnISlw==}
@@ -2764,7 +2913,7 @@ packages:
       jest-environment-node: 29.7.0
       jest-get-type: 29.6.3
       jest-regex-util: 29.6.3
-      jest-resolve: 29.5.0
+      jest-resolve: 29.7.0
       jest-runner: 29.7.0
       jest-util: 29.7.0
       jest-validate: 29.7.0
@@ -3023,7 +3172,7 @@ packages:
       '@babel/traverse': 7.23.7
       '@babel/types': 7.23.6
       '@jest/expect-utils': 29.7.0
-      '@jest/transform': 29.5.0
+      '@jest/transform': 29.7.0
       '@jest/types': 29.6.3
       '@types/babel__traverse': 7.20.5
       '@types/prettier': 2.7.3
@@ -3305,6 +3454,12 @@ packages:
       picomatch: 2.3.1
     dev: true
 
+  /mime/3.0.0:
+    resolution: {integrity: sha512-jSCU7/VB1loIWBZe14aEYHU/+1UMEHoaO7qxCOVJOw9GgH72VAWppxNcjU+x9a2k3GSIBXNKxXQFqRvvZ7vr3A==}
+    engines: {node: '>=10.0.0'}
+    hasBin: true
+    dev: false
+
   /mimic-fn/2.1.0:
     resolution: {integrity: sha512-OqbOk5oEQeAZ8WXWydlu9HJjz9WVdEIvamMCcXmuqUYjTknH/sqsWvhQ3vgwKFRR1HpjvNBKQ37nbJgYzGqGcg==}
     engines: {node: '>=6'}
@@ -3324,6 +3479,10 @@ packages:
   /ms/2.1.2:
     resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
     dev: true
+
+  /multipasta/0.1.21:
+    resolution: {integrity: sha512-HpF9156uifsQu1L8KKW1EqXIt3DacHJTzQ+JSm6IShkcyyf+krOWzfOgT3OLHzesM40hbs6/QW5CJWSEdDPQag==}
+    dev: false
 
   /natural-compare-lite/1.4.0:
     resolution: {integrity: sha512-Tj+HTDSJJKaZnfiuw+iaF9skdPpTo2GtEly5JHnWV/hfv2Qj/9RKsGISQtLh2ox3l5EAGw487hnBee0sIJ6v2g==}
@@ -3495,6 +3654,10 @@ packages:
       lines-and-columns: 1.2.4
     dev: true
 
+  /path-browserify/1.0.1:
+    resolution: {integrity: sha512-b7uo2UCUOYZcnF/3ID0lulOJi/bafxa1xPe7ZPsammBSpjSWQkjNxlt635YGS2MiR9GjvuXCtz2emr3jbsz98g==}
+    dev: false
+
   /path-exists/4.0.0:
     resolution: {integrity: sha512-ak9Qy5Q7jYb2Wwcey5Fpvg2KoAc/ZIhLSLOSBmRmygPsGwkVVt0fZa0qrtMz+m6tJTAHfZQ8FnmB4MG4LWy7/w==}
     engines: {node: '>=8'}
@@ -3580,7 +3743,6 @@ packages:
 
   /pure-rand/6.0.4:
     resolution: {integrity: sha512-LA0Y9kxMYv47GIPJy6MI84fqTd2HmYZI83W/kM/SkKfDlajnZYfmXFTxkbY+xSBPkLJxltMa9hIkmdc29eguMA==}
-    dev: true
 
   /queue-microtask/1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}

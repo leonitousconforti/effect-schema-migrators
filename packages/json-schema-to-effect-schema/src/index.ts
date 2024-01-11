@@ -1,4 +1,4 @@
-/* eslint-disable dot-notation, @typescript-eslint/typedef, @typescript-eslint/no-explicit-any */
+/* eslint-disable dot-notation, @typescript-eslint/typedef, @typescript-eslint/no-explicit-any, @rushstack/security/no-unsafe-regexp */
 
 import * as JsonSchema from "@effect/schema/JSONSchema";
 import * as Schema from "@effect/schema/Schema";

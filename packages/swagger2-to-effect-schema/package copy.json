@@ -1,20 +1,22 @@
 {
-    "name": "swagger2-to-effect-schema",
+    "name": "json-schema-to-effect-schema",
     "version": "0.0.2",
-    "description": "Converts a swagger2 document to an effect schema",
+    "description": "Converts a json schema to an effect schema",
     "homepage": "https://github.com/leonitousconforti/effect-schema-migrators",
     "repository": {
         "type": "git",
         "url": "https://github.com/leonitousconforti/effect-schema-migrators.git",
-        "directory": "packages/swagger2-to-effect-schema"
+        "directory": "packages/json-schema-to-effect-schema"
     },
     "license": "MIT",
     "author": "Leo Conforti <leo@leoconforti.us> (https://leoconforti.us)",
     "type": "module",
+    "main": "dist/src/index.js",
     "bin": {
-        "swagger2-to-effect-schema": "dist/bin/migrate.js"
+        "json-schema-to-effect-schema": "dist/bin/migrate.js"
     },
     "files": [
+        "dist/src",
         "dist/bin"
     ],
     "scripts": {
@@ -38,6 +40,7 @@
         "@rushstack/heft-jest-plugin": "0.10.8",
         "@rushstack/heft-lint-plugin": "0.2.16",
         "@rushstack/heft-typescript-plugin": "0.2.16",
+        "@types/heft-jest": "1.0.6",
         "@types/node": "20.11.0",
         "effect": "2.0.3",
         "eslint": "8.56.0",
@@ -47,7 +50,8 @@
         "fast-check": "3.15.0",
         "prettier": "3.1.1",
         "tsconfig-rig": "workspace:*",
-        "typescript": "5.3.3"
+        "typescript": "5.3.3",
+        "ajv": "~8.12.0"
     },
     "peerDependencies": {
         "@effect/schema": "0.59.1",

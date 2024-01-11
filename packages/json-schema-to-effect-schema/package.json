@@ -12,6 +12,9 @@
     "author": "Leo Conforti <leo@leoconforti.us> (https://leoconforti.us)",
     "type": "module",
     "main": "dist/src/index.js",
+    "bin": {
+        "json-schema-to-effect-schema": "dist/bin/migrate.js"
+    },
     "files": [
         "dist/src",
         "dist/bin"
@@ -20,6 +23,15 @@
         "_phase:build": "heft run --only build -- --clean",
         "_phase:test": "NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" heft run --only test -- --clean",
         "build": "NODE_OPTIONS=\"--experimental-vm-modules --no-warnings\" heft test --clean"
+    },
+    "dependencies": {
+        "@effect/cli": "~0.28.5",
+        "@effect/platform": "~0.41.0",
+        "@effect/platform-node": "~0.41.0",
+        "@effect/printer": "~0.30.3",
+        "@effect/printer-ansi": "~0.31.3",
+        "@effect/typeclass": "~0.22.3",
+        "effect-schema-codegen": "workspace:*"
     },
     "devDependencies": {
         "@effect/schema": "0.59.1",
