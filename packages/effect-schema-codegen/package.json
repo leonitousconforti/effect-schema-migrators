@@ -2,10 +2,10 @@
     "name": "effect-schema-codegen",
     "version": "0.0.1",
     "description": "Converts an effect schema AST back to TS code",
-    "homepage": "https://github.com/leonitousconforti/effect-schema-codegen",
+    "homepage": "https://github.com/leonitousconforti/effect-schema-migrators",
     "repository": {
         "type": "git",
-        "url": "https://github.com/leonitousconforti/effect-schema-codegen.git",
+        "url": "https://github.com/leonitousconforti/effect-schema-migrators.git",
         "directory": "packages/effect-schema-codegen"
     },
     "license": "MIT",
