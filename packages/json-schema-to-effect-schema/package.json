@@ -1,19 +1,20 @@
 {
-    "name": "effect-schema-codegen",
+    "name": "json-schema-to-effect-schema",
     "version": "0.0.1",
-    "description": "Converts an effect schema AST back to TS code",
+    "description": "Converts a json schema to an effect schema",
     "homepage": "https://github.com/leonitousconforti/effect-schema-codegen",
     "repository": {
         "type": "git",
         "url": "https://github.com/leonitousconforti/effect-schema-codegen.git",
-        "directory": "packages/effect-schema-codegen"
+        "directory": "packages/json-schema-to-effect-schema"
     },
     "license": "MIT",
     "author": "Leo Conforti <leo@leoconforti.us> (https://leoconforti.us)",
     "type": "module",
     "main": "dist/src/index.js",
     "files": [
-        "dist/src"
+        "dist/src",
+        "dist/bin"
     ],
     "scripts": {
         "_phase:build": "heft run --only build -- --clean",

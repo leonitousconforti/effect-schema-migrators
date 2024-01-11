@@ -150,6 +150,7 @@
                     "startport",
                     "Sysctls",
                     "tarfile",
+                    "tarjan",
                     "Templating",
                     "Tmpfs",
                     "tsdoc",

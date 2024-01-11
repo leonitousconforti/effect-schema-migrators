@@ -419,6 +419,11 @@
             "shouldPublish": true
         },
         {
+            "packageName": "json-schema-to-effect-schema",
+            "projectFolder": "packages/json-schema-to-effect-schema",
+            "shouldPublish": true
+        },
+        {
             "packageName": "tsconfig-rig",
             "projectFolder": "packages/tsconfig-rig",
             "shouldPublish": false
