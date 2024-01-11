@@ -414,6 +414,11 @@
         //   "tags": ["tools"]
         // }
         {
+            "packageName": "effect-schema-codegen",
+            "projectFolder": "packages/effect-schema-codegen",
+            "shouldPublish": true
+        },
+        {
             "packageName": "tsconfig-rig",
             "projectFolder": "packages/tsconfig-rig",
             "shouldPublish": false
