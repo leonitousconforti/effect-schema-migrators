@@ -6,11 +6,7 @@
     "features": {
         "ghcr.io/devcontainers/features/git:1": {},
         "ghcr.io/devcontainers/features/node:1": {},
-        "ghcr.io/devcontainers/features/common-utils:2": {},
-        "ghcr.io/devcontainers/features/docker-in-docker:2": {
-            "moby": false,
-            "dockerDashComposeVersion": "v2"
-        }
+        "ghcr.io/devcontainers/features/common-utils:2": {}
     },
 
     "customizations": {
@@ -22,8 +18,11 @@
                 "esbenp.prettier-vscode",
                 "editorconfig.editorconfig",
                 "streetsidesoftware.code-spell-checker",
+                "shd101wyy.markdown-preview-enhanced",
                 "eamodio.gitlens",
-                "mutantdino.resourcemonitor"
+                "GitHub.vscode-pull-request-github",
+                "mutantdino.resourcemonitor",
+                "RushStack.rushstack"
             ],
             "settings": {
                 "cSpell.enabled": true,
@@ -33,6 +32,8 @@
                 "codemetrics.basics.DecorationModeEnabled": false,
                 "codemetrics.basics.OverviewRulerModeEnabled": false,
                 "editor.defaultFormatter": "EditorConfig.EditorConfig",
+                "prettier.prettierPath": "./common/autoinstallers/rush-prettier/node_modules/prettier",
+                "files.associations": { "*.json": "jsonc", "package.json": "json", "cloudinit.conf": "plaintext" },
                 "[typescript][typescriptreact][javascript][javascriptreact][json][jsonc]": {
                     "editor.defaultFormatter": "esbenp.prettier-vscode"
                 },
@@ -47,7 +48,12 @@
                     "**/CVS": true,
                     "**/.DS_Store": true,
                     "**/Thumbs.db": true,
-                    "**/temp": true
+                    "**/.cache": true,
+                    "**/.heft": true,
+                    "**/.rush": true,
+                    "apps/**/temp": true,
+                    "packages/**/temp": true,
+                    "**/rush-logs": true
                 },
                 "cSpell.words": [
                     "aaahhhhh",
@@ -159,8 +165,7 @@
                 ]
             }
         }
-    }
+    },
 
-    // TODO: waiting for https://github.com/devcontainers/features/pull/770
-    // "postCreateCommand": "pnpm install && pnpm run gen && pnpm run test"
+    "postCreateCommand": "/bin/bash ./setup.sh"
 }
