@@ -282,7 +282,6 @@ export const partition = (ast: AST.AST): ReadonlyArray.NonEmptyReadonlyArray<Par
 
     const topLevelStronglyConnected: ReadonlyArray.NonEmptyReadonlyArray<Partition> = Function.pipe(
         stronglyConnectedComponents(ast),
-        (x) => x as ReadonlyArray.NonEmptyReadonlyArray<ReadonlyArray.NonEmptyReadonlyArray<AST.AST>>,
         ReadonlyArray.filter(
             (stronglyConnectedComponent) =>
                 (stronglyConnectedComponent.some((node) => isSelfReferential(node)) &&
@@ -290,7 +289,7 @@ export const partition = (ast: AST.AST): ReadonlyArray.NonEmptyReadonlyArray<Par
                 stronglyConnectedComponent.some((node) => interiorNodes.includes(node)) ||
                 (stronglyConnectedComponent.length === 1 && AST.isSuspend(stronglyConnectedComponent[0]))
         ),
-        (x) => x as unknown as ReadonlyArray.NonEmptyReadonlyArray<ReadonlyArray.NonEmptyReadonlyArray<AST.AST>>,
+        (_) => _ as unknown as ReadonlyArray.NonEmptyReadonlyArray<ReadonlyArray.NonEmptyReadonlyArray<AST.AST>>,
         ReadonlyArray.map((stronglyConnectedComponent) =>
             stronglyConnectedComponent.length === 1 &&
             AST.isSuspend(stronglyConnectedComponent[0]) &&
