@@ -16,9 +16,9 @@ export const codegen = (
 
     const codegen_ = (ast_: AST.AST, generateInnerSuspends: boolean): string => {
         // Short circuit base case
-        if (Traverse.isBoundary(ast_) && !AST.isSuspend(ast_)) {
-            return AST.getIdentifierAnnotation(ast_).pipe(Option.getOrThrow);
-        }
+        // if (Traverse.isBoundary(ast_) && !AST.isSuspend(ast_)) {
+        //     return AST.getIdentifierAnnotation(ast_).pipe(Option.getOrThrow);
+        // }
 
         return Function.pipe(
             Match.value(ast_),
@@ -57,7 +57,7 @@ export const codegen = (
                 throw new Error("can not codegen a transform");
             }),
             Match.when(AST.isUniqueSymbol, ({ symbol: _symbol }) => {
-                const maybeVariableName = AST.getIdentifierAnnotation(ast_);
+                const maybeVariableName: Option.Option<string> = AST.getIdentifierAnnotation(ast_);
                 if (Option.isNone(maybeVariableName)) {
                     throw new Error("Can not codegen a unique symbol without an identifier annotation");
                 }
@@ -76,7 +76,7 @@ export const codegen = (
             // Recursive cases
             // ---------------------------------------------
             Match.when(AST.isSuspend, ({ f }) => {
-                const maybeIdentifierAnnotation = AST.getIdentifierAnnotation(ast_);
+                const maybeIdentifierAnnotation: Option.Option<string> = AST.getIdentifierAnnotation(ast_);
                 if (Option.isNone(maybeIdentifierAnnotation)) {
                     throw new Error("Can not codegen a suspend without an identifier annotation");
                 }
@@ -86,23 +86,28 @@ export const codegen = (
                     : codegen_(f(), true);
             }),
             Match.when(AST.isUnion, (union) => {
-                const nested = union.types.map((_) => codegen_(_, generateInnerSuspends));
+                const nested: string[] = union.types.map((_) => codegen_(_, generateInnerSuspends));
                 return `union(${nested.join(", ")})`;
             }),
             Match.when(AST.isTuple, (tuple) => {
                 if (tuple.elements.length > 0) {
                     return `tuple()`;
                 }
-                const nestedRest = Option.getOrThrow(tuple.rest).map((_) => codegen_(_, generateInnerSuspends));
+                const nestedRest: string[] = Option.getOrThrow(tuple.rest).map((_) =>
+                    codegen_(_, generateInnerSuspends)
+                );
                 return `array(${nestedRest.join(", ")})`;
             }),
             Match.when(AST.isTypeLiteral, ({ indexSignatures: _indexSignatures, propertySignatures }) => {
-                const asts = propertySignatures.map((property) => ({
+                const asts: Array<{
+                    property: AST.PropertySignature;
+                    code: string;
+                }> = propertySignatures.map((property) => ({
                     property,
                     code: codegen_(property.type, generateInnerSuspends),
                 }));
 
-                const allFields = asts.flatMap(
+                const allFields: string[] = asts.flatMap(
                     ({ code, property }) =>
                         `/** ${Option.getOrUndefined(AST.getDescriptionAnnotation(property.type))} */\n${
                             property.name.toString().includes(".") || property.name.toString().includes("-")
@@ -111,7 +116,7 @@ export const codegen = (
                         }: ${code}`
                 );
 
-                const a = [...String.linesIterator(allFields.join(",\n"))]
+                const a: string = [...String.linesIterator(allFields.join(",\n"))]
                     .map((x) => `${" ".repeat(indentationSize)}${x}`)
                     .join("\n");
                 return `struct({\n${a}\n})`;
@@ -121,7 +126,7 @@ export const codegen = (
         );
     };
 
-    const output = partitions
+    const output: string = partitions
         .flatMap((partition) =>
             partition.map(
                 (ast, _index, array) => `export const ${ast.identifier} = ${codegen_(ast.ast, array.length === 1)}`
@@ -129,19 +134,18 @@ export const codegen = (
         )
         .join("\n\n");
 
-    // const hoistedValues = traverseToBoundries(ast).pipe(
-    //   Stream.filterMap((node) => {
-    //     if (isUniqueSymbol(node)) {
-    //       const variableName = getIdentifierAnnotation(node).pipe(Option.getOrThrow)
-    //       return Option.some(`export const ${variableName} = Symbol.for("${node.symbol.description}")`)
-    //     }
-    //     return Option.none()
-    //   }),
-    //   Stream.runCollect,
-    //   Effect.runSync,
-    //   Chunk.join("\n\n")
-    // )
+    const hoistedValues: string = Function.pipe(
+        Traverse.traverseToBoundaries(ast),
+        ReadonlyArray.filterMap((node) => {
+            if (AST.isUniqueSymbol(node)) {
+                const variableName: string = AST.getIdentifierAnnotation(node).pipe(Option.getOrThrow);
+                return Option.some(`export const ${variableName} = Symbol.for("${node.symbol.description}")`);
+            }
+            return Option.none();
+        }),
+        ReadonlyArray.join("\n\n")
+    );
 
-    // return String.isEmpty(hoistedValues) ? output : `${hoistedValues}\n\n${output}`
-    return `import * as ${schemaModuleImportIdentifier} from "effect/schema/Schema"\n\n${output}`;
+    const header: string = `import * as ${schemaModuleImportIdentifier} from "effect/schema/Schema"\n\n`;
+    return String.isEmpty(hoistedValues) ? `${header}${output}` : `${header}${hoistedValues}\n\n${output}`;
 };

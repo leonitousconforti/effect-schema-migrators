@@ -29,7 +29,7 @@
         "@rushstack/heft-lint-plugin": "0.2.16",
         "@rushstack/heft-typescript-plugin": "0.2.16",
         "@types/heft-jest": "1.0.6",
-        "@types/node": "20.10.8",
+        "@types/node": "20.11.0",
         "effect": "2.0.3",
         "eslint": "8.56.0",
         "eslint-config-prettier": "9.1.0",

@@ -1,3 +1,5 @@
+/* eslint-disable dot-notation, @typescript-eslint/typedef, @typescript-eslint/no-explicit-any */
+
 import * as JsonSchema from "@effect/schema/JSONSchema";
 import * as Schema from "@effect/schema/Schema";
 import * as Chunk from "effect/Chunk";
@@ -9,7 +11,7 @@ import * as ReadonlyArray from "effect/ReadonlyArray";
 import * as Stream from "effect/Stream";
 
 // TODO: Would be great if I didn't have to redefine this here
-const DEFINITION_PREFIX = "#/$defs/";
+const DEFINITION_PREFIX: "#/$defs/" = "#/$defs/" as const;
 
 const isJsonSchema7Any = (schema: JsonSchema.JsonSchema7): schema is JsonSchema.JsonSchema7Any =>
     (schema as unknown as Record<string, unknown>)["$id"] === "/schemas/any";
@@ -23,7 +25,7 @@ const isJsonSchema7object = (schema: JsonSchema.JsonSchema7): schema is JsonSche
 const isJsonSchema7Empty = (schema: JsonSchema.JsonSchema7): schema is JsonSchema.JsonSchema7empty =>
     (schema as unknown as Record<string, unknown>)["$id"] === "/schemas/{}";
 
-const isJsonSchema7Ref = (schema: JsonSchema.JsonSchema7): schema is JsonSchema.JsonSchema7Ref =>
+const isJsonSchema7Reference = (schema: JsonSchema.JsonSchema7): schema is JsonSchema.JsonSchema7Ref =>
     (schema as unknown as Record<string, unknown>)["$ref"] !== undefined;
 
 const isJsonSchema7Const = (schema: JsonSchema.JsonSchema7): schema is JsonSchema.JsonSchema7Const =>
@@ -84,7 +86,7 @@ export const traverse = (
             isJsonSchema7Number,
             isJsonSchema7Integer,
             isJsonSchema7String,
-            isJsonSchema7Ref,
+            isJsonSchema7Reference,
             () => Stream.fromIterable([json])
         ),
         Match.when(isJsonSchema7AnyOf, ({ anyOf }) =>
@@ -104,7 +106,7 @@ export const traverse = (
                     : Stream.empty;
 
             const patternPropertiesStream =
-                patternProperties && Object.keys(patternProperties).length
+                patternProperties && Object.keys(patternProperties).length > 0
                     ? Stream.mergeAll(Object.values(patternProperties).map(traverse), { concurrency: "unbounded" })
                     : Stream.empty;
 
@@ -203,20 +205,20 @@ const decodeWithReferences = (
                 return [name, withOptional] as const;
             });
 
-            const initialStruct = Schema.struct(Object.fromEntries(fields)) as UnknownSchema;
-            const hasPatternProperties =
-                Predicate.isNotNullable(patternProperties) && Object.keys(patternProperties).length;
+            const initialStruct: UnknownSchema = Schema.struct(Object.fromEntries(fields)) as UnknownSchema;
             const hasUnknownAdditionalProperties = additionalProperties === true;
+            const hasPatternProperties =
+                Predicate.isNotNullable(patternProperties) && Object.keys(patternProperties).length > 0;
             const hasKnownAdditionalProperties =
                 Predicate.isNotUndefined(additionalProperties) &&
                 !Predicate.isBoolean(additionalProperties) &&
-                Object.keys(additionalProperties).length;
+                Object.keys(additionalProperties).length > 0;
 
             const withPattern: UnknownSchemaIdentity = hasPatternProperties
                 ? (Schema.extend(
                       Schema.record(
                           Schema.string.pipe(Schema.pattern(new RegExp(Object.keys(patternProperties)[0]!))),
-                          decodeWithReferences(patternProperties[Object.keys(patternProperties)[0]!], references)
+                          decodeWithReferences(patternProperties[Object.keys(patternProperties)[0]!]!, references)
                       )
                   ) as UnknownSchemaIdentity)
                 : (Function.identity as UnknownSchemaIdentity);
@@ -243,7 +245,7 @@ const decodeWithReferences = (
 
             const itemsArray = Array.isArray(items) ? items : [items];
             if (Predicate.isUndefined(minItems)) {
-                return Schema.array(decodeWithReferences(itemsArray[0], references));
+                return Schema.array(decodeWithReferences(itemsArray[0]!, references));
             }
 
             const [elements, optionalElements] = Function.pipe(
@@ -284,9 +286,12 @@ const decodeWithReferences = (
         // ---------------------------------------------
         // Handle references
         // ---------------------------------------------
-        Match.when(isJsonSchema7Ref, ({ $ref }) => {
-            const reference = String($ref.replace(DEFINITION_PREFIX, ""));
-            return Schema.identifier(reference)(Schema.suspend(() => references[reference]));
+        Match.when(isJsonSchema7Reference, ({ $ref }) => {
+            const reference: string = String($ref.replace(DEFINITION_PREFIX, ""));
+            if (references[reference] === undefined) {
+                throw new Error(`Cannot find reference ${reference}`);
+            }
+            return Schema.identifier(reference)(Schema.suspend(() => references[reference]!));
         }),
         // ---------------------------------------------
         // Handle unknowns (malformed json schemas that can't be parsed)
@@ -298,7 +303,7 @@ const decodeWithReferences = (
         // Add description and example annotations
         // ---------------------------------------------
         (schema) => {
-            const record = input as unknown as Record<string, unknown>;
+            const record: Record<string, unknown> = input as unknown as Record<string, unknown>;
             const withDescription =
                 Predicate.isNotNullable(record["description"]) && Predicate.isString(record["description"])
                     ? Schema.description(record["description"])
@@ -313,28 +318,31 @@ const decodeWithReferences = (
     );
 
 const getAllReferencedSchemaNames = (schema: JsonSchema.JsonSchema7 | JsonSchema.JsonSchema7Root): Array<string> => {
-    const referencesFromTopLevel = traverse(schema);
-    const referencesFromDefs = isJsonSchema7Root(schema) ? Object.values(schema.$defs ?? {}).map(traverse) : [];
-    const allReferences = Stream.mergeAll([referencesFromTopLevel, ...referencesFromDefs], {
-        concurrency: "unbounded",
-    });
+    const referencesFromTopLevel: Stream.Stream<never, Error, JsonSchema.JsonSchema7> = traverse(schema);
+    const referencesFromDefs: Stream.Stream<never, Error, JsonSchema.JsonSchema7>[] = isJsonSchema7Root(schema)
+        ? Object.values(schema.$defs ?? {}).map(traverse)
+        : [];
+    const allReferences: Stream.Stream<never, Error, JsonSchema.JsonSchema7> = Stream.mergeAll(
+        [referencesFromTopLevel, ...referencesFromDefs],
+        { concurrency: "unbounded" }
+    );
 
     return allReferences.pipe(
-        Stream.filter(isJsonSchema7Ref),
+        Stream.filter(isJsonSchema7Reference),
         Stream.map(({ $ref }) => $ref),
         Stream.runCollect,
         Effect.orDie,
         Effect.runSync,
-        Chunk.map((ref) => ref.replace(DEFINITION_PREFIX, "")),
+        Chunk.map((reference) => reference.replace(DEFINITION_PREFIX, "")),
         Chunk.dedupe,
         Chunk.toArray
     );
 };
 
 export const decodeMultiSchema = (schema: JsonSchema.JsonSchema7Root): Record<string, UnknownSchema> => {
-    const allReferences = getAllReferencedSchemaNames(schema);
+    const allReferences: string[] = getAllReferencedSchemaNames(schema);
     const initialReferences: Record<string, UnknownSchema> = Object.fromEntries(
-        allReferences.map((name) => [name, Function.unsafeCoerce(undefined)])
+        allReferences.map((name) => [name, Function.unsafeCoerce({})])
     );
 
     for (const [name, json] of Object.entries(schema.$defs ?? {})) {
@@ -349,7 +357,7 @@ export const decodeSingleSchema = (
 ): Schema.Schema<unknown, unknown> => {
     // Trivial case when schema is not a root object (shouldn't contain any references since it's not a root schema)
     if (!isJsonSchema7Root(schema)) {
-        const allReferences = getAllReferencedSchemaNames(schema);
+        const allReferences: string[] = getAllReferencedSchemaNames(schema);
         if (allReferences.length > 0) {
             throw new Error("Cannot decode a single schema with references");
         }
@@ -357,6 +365,6 @@ export const decodeSingleSchema = (
     }
 
     // Non trivial case when schema is a root object
-    const initialReferences = decodeMultiSchema(schema);
+    const initialReferences: Record<string, UnknownSchema> = decodeMultiSchema(schema);
     return decodeWithReferences(schema, initialReferences);
 };
