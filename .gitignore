@@ -14,6 +14,7 @@ lib-cov
 
 # Coverage directory used by tools like istanbul
 coverage
+temp
 
 # nyc test coverage
 .nyc_output
@@ -58,11 +59,6 @@ jspm_packages/
 # OS X temporary files
 .DS_Store
 
-# IntelliJ IDEA project files; if you want to commit IntelliJ settings, this recipe may be helpful:
-# https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
-.idea/
-*.iml
-
 # Rush temporary files
 common/deploy/
 common/temp/
@@ -74,4 +70,5 @@ common/autoinstallers/*/.npmrc
 .cache
 .heft
 
-# Typescript output
+# Typescript
+dist/
