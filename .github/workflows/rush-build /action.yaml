@@ -1,0 +1,44 @@
+name: Reusable rush build workflow
+
+inputs:
+  BUILD_PARAMETERS:
+    required: false
+    description: "Build parameters to pass to rush build"
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-node@v3
+      with:
+        node-version: 18
+
+    - name: Setup rush build cache
+      uses: gigara/rush-cache@v2
+
+    - name: Setup rush install cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          common/temp/install-run
+          ~/.rush
+        key: rush-install-run-cache-${{ hashFiles('rush.json') }}
+
+    - name: Setup pnpm cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          common/temp/pnpm-store
+          ~/.cache/puppeteer
+        key: pnpm-cache-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+    - name: Rush Install
+      shell: bash
+      run: |
+        node common/scripts/install-run-rush.js install
+        node common/scripts/install-run-rush.js update-autoinstaller --name rush-prettier
+        node common/scripts/install-run-rush.js update-autoinstaller --name rush-commitlint
+        node common/scripts/install-run-rush.js update-autoinstaller --name rush-github-action-cache
+
+    - name: Rush build and test
+      shell: bash
+      run: node common/scripts/install-run-rush.js test --timeline --production ${{ inputs.BUILD_PARAMETERS }}

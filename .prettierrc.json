@@ -1,6 +1,9 @@
 {
     "$schema": "https://json.schemastore.org/prettierrc",
-    "plugins": ["prettier-plugin-packagejson", "prettier-plugin-jsdoc"],
+    "plugins": [
+        "./common/autoinstallers/rush-prettier/node_modules/prettier-plugin-packagejson/lib/index.js",
+        "./common/autoinstallers/rush-prettier/node_modules/prettier-plugin-jsdoc/dist/index.js"
+    ],
 
     "semi": true,
     "singleQuote": false,
