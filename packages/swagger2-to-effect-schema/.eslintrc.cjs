@@ -26,6 +26,7 @@ module.exports = {
         {
             files: ["./bin/**/*.ts"],
             rules: {
+                "dot-notation": "off",
                 "@typescript-eslint/typedef": "off",
             },
         },

@@ -3,11 +3,12 @@
 import * as Cli from "@effect/cli";
 import * as PlatformNode from "@effect/platform-node";
 import * as JsonSchema from "@effect/schema/JSONSchema";
+import * as Schema from "@effect/schema/Schema";
 import * as Codegen from "effect-schema-codegen";
 import * as Effect from "effect/Effect";
 
-import { version } from "../package.json";
-import { decodeMultiSchema } from "../src/index.js";
+import { decodeSingleSchema } from "json-schema-to-effect-schema";
+import packageJson from "../package.json" assert { type: "json" };
 
 const command = Cli.Command.make(
     "json-schema-to-effect-schema",
@@ -23,29 +24,45 @@ const command = Cli.Command.make(
             const fs = yield* _(PlatformNode.FileSystem.FileSystem);
 
             const data = yield* _(fs.readFileString(file));
-            const jsonSchema7: JsonSchema.JsonSchema7Root = JSON.parse(data) as unknown as JsonSchema.JsonSchema7Root;
-            const schemaEntries = Object.entries(decodeMultiSchema(jsonSchema7));
+            const json: Record<string, unknown> = JSON.parse(data) as Record<string, unknown>;
+            const definitions = json["definitions"] as Record<string, JsonSchema.JsonSchema7>;
+            const jsonSchema7: JsonSchema.JsonSchema7Root = {
+                $defs: definitions,
+                oneOf: Object.keys(definitions).map((key) => ({ $ref: `#/$defs/${key}` })),
+            } as JsonSchema.JsonSchema7Root;
 
-            const schemas = schemaEntries
-                .map(([definitionName, schema]) => ({
-                    name: definitionName,
-                    code: Codegen.codegen(schema.ast, schemaModuleImportIdentifier, indentationSize),
-                }))
-                .map(({ code, name }) =>
-                    code.startsWith("S.struct")
-                        ? `export class ${name} extends S.Class<${name}>()${code.slice("S.struct".length)} {}`
-                        : `export const ${name} = ${code}`
-                )
-                .join("\n\n");
+            const test = Codegen.codegen(
+                decodeSingleSchema(jsonSchema7).pipe(Schema.identifier("testing")).ast,
+                schemaModuleImportIdentifier,
+                indentationSize
+            );
 
-            const importHeader = `import * as ${schemaModuleImportIdentifier} from "../src/Schema.js"\n\n`;
-            yield* _(fs.writeFileString("./bin/test.ts", importHeader + schemas));
+            // const schemaEntries = Object.entries(decodeMultiSchema(jsonSchema7));
+            // const schemas = schemaEntries
+            //     .map(([definitionName, schema]) => ({
+            //         name: definitionName,
+            //         code: Codegen.codegen(
+            //             schema.pipe(Schema.identifier(definitionName)).ast,
+            //             schemaModuleImportIdentifier,
+            //             indentationSize
+            //         ),
+            //     }))
+            // .map(({ code, name }) =>
+            //     code.startsWith("S.struct")
+            //         ? `export class ${name} extends S.Class<${name}>()${code.slice("S.struct".length)} {}`
+            //         : `export const ${name} = ${code}`
+            // )
+            // .map(({ code }) => code)
+            // .join("\n\n");
+
+            const importHeader = `import * as ${schemaModuleImportIdentifier} from "@effect/schema/Schema"\n\n`;
+            yield* _(fs.writeFileString("./schema.ts", importHeader + test));
         })
 );
 
 const cli = Cli.Command.run(command, {
     name: "json-schema-to-effect-schema",
-    version,
+    version: packageJson.version,
 });
 
 Effect.suspend(() => cli(process.argv.slice(2))).pipe(

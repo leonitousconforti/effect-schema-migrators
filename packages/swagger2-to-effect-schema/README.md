@@ -1,1 +1,1 @@
-usage: `npx json-schema-to-effect-schema <json-schema-file>`
+usage: `npx swagger2-to-effect-schema <swagger-document>`

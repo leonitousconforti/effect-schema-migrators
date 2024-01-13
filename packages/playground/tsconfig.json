@@ -1,0 +1,7 @@
+{
+    "extends": "tsconfig-rig/profile/default/config/tsconfig.json",
+    "compilerOptions": {
+        "noEmit": true
+    },
+    "include": ["*.ts"]
+}

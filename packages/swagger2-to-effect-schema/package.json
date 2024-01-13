@@ -15,7 +15,7 @@
         "swagger2-to-effect-schema": "dist/bin/migrate.js"
     },
     "files": [
-        "dist/bin"
+        "dist/"
     ],
     "scripts": {
         "_phase:build": "heft run --only build -- --clean",
@@ -29,7 +29,8 @@
         "@effect/printer": "~0.30.3",
         "@effect/printer-ansi": "~0.31.3",
         "@effect/typeclass": "~0.22.3",
-        "effect-schema-codegen": "workspace:*"
+        "effect-schema-codegen": "workspace:*",
+        "json-schema-to-effect-schema": "workspace:*"
     },
     "devDependencies": {
         "@effect/schema": "0.59.1",

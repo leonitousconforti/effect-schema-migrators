@@ -432,6 +432,11 @@
             "packageName": "tsconfig-rig",
             "projectFolder": "packages/tsconfig-rig",
             "shouldPublish": false
+        },
+        {
+            "packageName": "playground",
+            "projectFolder": "packages/playground",
+            "shouldPublish": false
         }
     ]
 }

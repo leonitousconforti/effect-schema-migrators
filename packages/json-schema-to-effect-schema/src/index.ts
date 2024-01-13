@@ -96,13 +96,14 @@ export const traverse = (
             Stream.mergeAll([Stream.fromIterable([json]), ...oneOf.map(traverse)], { concurrency: "unbounded" })
         ),
         Match.when(isJsonSchema7Object, ({ additionalProperties, patternProperties, properties }) => {
-            const propertiesStream = Stream.mergeAll(Object.values(properties).map(traverse), {
-                concurrency: "unbounded",
-            });
-
             const additionalPropertiesStream =
                 !Predicate.isBoolean(additionalProperties) && Predicate.isNotUndefined(additionalProperties)
                     ? traverse(additionalProperties)
+                    : Stream.empty;
+
+            const propertiesStream =
+                properties && Object.keys(properties).length > 0
+                    ? Stream.mergeAll(Object.values(properties).map(traverse), { concurrency: "unbounded" })
                     : Stream.empty;
 
             const patternPropertiesStream =
@@ -154,7 +155,8 @@ const decodeWithReferences = (
         // Handle enums
         // ---------------------------------------------
         Match.when(isJsonSchema7Enum, ({ enum: enum_ }) =>
-            Schema.union(...ReadonlyArray.map(enum_, (a) => Schema.literal(a)))
+            //Schema.union(...ReadonlyArray.map(enum_, (a) => Schema.literal(a)))
+            Schema.enums(Object.assign({}, ...enum_.map((a) => ({ [`${a}`]: a }))))
         ),
         Match.when(isJsonSchema7Enums, ({ oneOf }) =>
             Schema.enums(Object.assign({}, ...oneOf.map(({ const: const_, title }) => ({ [title]: const_ }))))
@@ -198,8 +200,8 @@ const decodeWithReferences = (
         // Handle objects (will do recursive calls for the properties)
         // ---------------------------------------------
         Match.when(isJsonSchema7Object, ({ additionalProperties, patternProperties, properties, required }) => {
-            const fields = Object.entries(properties).map(([name, property]) => {
-                const isRequired = required.includes(name);
+            const fields = Object.entries(properties ?? {}).map(([name, property]) => {
+                const isRequired = required?.includes(name);
                 const decodedProperty = decodeWithReferences(property, references);
                 const withOptional = isRequired ? decodedProperty : Schema.optional(decodedProperty, { exact: true }); // FIXME: How do I know if this is "exact" / will it always be "exact" here?
                 return [name, withOptional] as const;
