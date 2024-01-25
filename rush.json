@@ -424,8 +424,18 @@
             "shouldPublish": true
         },
         {
+            "packageName": "swagger2-to-effect-schema",
+            "projectFolder": "packages/swagger2-to-effect-schema",
+            "shouldPublish": true
+        },
+        {
             "packageName": "tsconfig-rig",
             "projectFolder": "packages/tsconfig-rig",
+            "shouldPublish": false
+        },
+        {
+            "packageName": "playground",
+            "projectFolder": "packages/playground",
             "shouldPublish": false
         }
     ]

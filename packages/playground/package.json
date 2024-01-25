@@ -1,0 +1,20 @@
+{
+    "name": "playground",
+    "version": "0.0.0",
+    "private": true,
+    "dependencies": {
+        "@effect/cli": "~0.29.0",
+        "@effect/platform": "~0.42.4",
+        "@effect/platform-node": "~0.41.5",
+        "@effect/printer": "~0.30.7",
+        "@effect/printer-ansi": "~0.31.7",
+        "@effect/schema": "0.60.4",
+        "@effect/typeclass": "~0.22.7",
+        "effect": "2.1.1",
+        "effect-schema-codegen": "workspace:*",
+        "fast-check": "3.15.0",
+        "json-schema-to-effect-schema": "workspace:*",
+        "swagger2-to-effect-schema": "workspace:*",
+        "tsconfig-rig": "workspace:*"
+    }
+}

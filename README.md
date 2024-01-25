@@ -10,6 +10,10 @@ Why not implement this using [swagger-codegen](https://github.com/swagger-api/sw
 
 The Moby projects swagger2.0 document is over 10K lines full of documentation, types, routes, and examples that I would like to have in one of [my projects](https://github.com/leonitousconforti/the-moby-effect) as an @effect/schema. Let's see how we can migrate their swagger2.0 document to a starting point for an @effect/schema
 
+
+
+Remember this is just a starting point for your @effect/schema, there is so much more than can be expressed in other schemas!
+
 ## Goals :white_check_mark:
 
 - migrate json schemas to effect schemas

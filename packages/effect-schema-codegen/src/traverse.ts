@@ -4,6 +4,9 @@ import * as Option from "effect/Option";
 import * as Predicate from "effect/Predicate";
 import * as ReadonlyArray from "effect/ReadonlyArray";
 
+/** A node in the AST with a path to it */
+export type AstNode = AST.AST & { path: ReadonlyArray<string> };
+
 /**
  * A core part of generating TS code from the AST is being able to walk/traverse
  * the AST - after all, we need to know what the AST looks like in order to
@@ -29,18 +32,21 @@ export const isBoundary: Predicate.Predicate<AST.AST> = Predicate.some([
 export const traverseToBoundaries = (
     ast: AST.AST,
     options?: { ignoreTopLevelIdentifierBoundary?: boolean | undefined } | undefined
-): ReadonlyArray<AST.AST> => {
-    const traverseToBoundaries_ = (ast_: AST.AST): ReadonlyArray<AST.AST> => {
+): ReadonlyArray<AstNode> => {
+    const traverseToBoundaries_ = (ast_: AST.AST, currentPath: ReadonlyArray<string>): ReadonlyArray<AstNode> => {
         const atTopLevel: boolean = ast_ === ast;
         const isIdentifierBoundary: boolean = isBoundary(ast_) && !AST.isSuspend(ast_);
         const skipTopLevelIdentifierBoundary: boolean = options?.ignoreTopLevelIdentifierBoundary ?? false;
-        const selfEmit: AST.AST[] = isIdentifierBoundary && atTopLevel && skipTopLevelIdentifierBoundary ? [] : [ast_];
+        const selfEmit: Array<AstNode> =
+            isIdentifierBoundary && atTopLevel && skipTopLevelIdentifierBoundary
+                ? []
+                : [{ ...ast_, path: currentPath }];
 
         if (
             (isIdentifierBoundary && !atTopLevel) ||
             (isIdentifierBoundary && atTopLevel && !skipTopLevelIdentifierBoundary)
         ) {
-            return [ast_];
+            return [{ ...ast, path: currentPath }];
         }
 
         switch (ast_._tag) {
@@ -68,37 +74,51 @@ export const traverseToBoundaries = (
             // Non-trivial cases
             // ---------------------------------------------
             case "Transform": {
-                return [...selfEmit, ...traverseToBoundaries_(ast_.from), ...traverseToBoundaries_(ast_.to)];
+                return [
+                    ...selfEmit,
+                    ...traverseToBoundaries_(ast_.from, currentPath),
+                    ...traverseToBoundaries_(ast_.to, currentPath),
+                ];
             }
             // ---------------------------------------------
             // Recursive cases
             // ---------------------------------------------
             case "Declaration": {
-                const selfArray: AST.AST[] = [...selfEmit, ...traverseToBoundaries_(ast_.type)];
-                const parameterArrays: AST.AST[] = ast_.typeParameters.flatMap(traverseToBoundaries_);
+                const selfArray: Array<AST.AST & { path: ReadonlyArray<string> }> = [
+                    ...selfEmit,
+                    ...traverseToBoundaries_(ast_.type, currentPath),
+                ];
+                const parameterArrays: Array<AST.AST & { path: ReadonlyArray<string> }> = ast_.typeParameters.flatMap(
+                    (node) => traverseToBoundaries_(node, currentPath)
+                );
                 return [...selfArray, ...parameterArrays];
             }
             case "Refinement": {
-                return [...selfEmit, ...traverseToBoundaries_(ast_.from)];
+                return [...selfEmit, ...traverseToBoundaries_(ast_.from, currentPath)];
             }
             case "Tuple": {
-                const elementArrays: AST.AST[] = ast_.elements.flatMap(({ type }) => traverseToBoundaries_(type));
-                const restArrays: AST.AST[] = Option.map(ast_.rest, ReadonlyArray.flatMap(traverseToBoundaries_)).pipe(
-                    Option.getOrElse(() => [])
+                const elementArrays: Array<AST.AST & { path: ReadonlyArray<string> }> = ast_.elements.flatMap(
+                    ({ type }) => traverseToBoundaries_(type, currentPath)
                 );
+                const restArrays: Array<AST.AST & { path: ReadonlyArray<string> }> = Option.map(
+                    ast_.rest,
+                    ReadonlyArray.flatMap((node) => traverseToBoundaries_(node, currentPath))
+                ).pipe(Option.getOrElse(() => []));
                 return [...selfEmit, ...elementArrays, ...restArrays];
             }
             case "Union": {
-                const innerTypesArray: AST.AST[] = ast_.types.flatMap(traverseToBoundaries_);
+                const innerTypesArray: Array<AST.AST & { path: ReadonlyArray<string> }> = ast_.types.flatMap((node) =>
+                    traverseToBoundaries_(node, currentPath)
+                );
                 return [...selfEmit, ...innerTypesArray];
             }
             case "TypeLiteral": {
-                const indexSignatureArrays: AST.AST[] = ast_.indexSignatures.flatMap(({ type }) =>
-                    traverseToBoundaries_(type)
-                );
-                const propertySignatureArrays: AST.AST[] = ast_.propertySignatures.flatMap(({ type }) =>
-                    traverseToBoundaries_(type)
-                );
+                const indexSignatureArrays: Array<AST.AST & { path: ReadonlyArray<string> }> =
+                    ast_.indexSignatures.flatMap(({ type }) => traverseToBoundaries_(type, currentPath));
+                const propertySignatureArrays: Array<AST.AST & { path: ReadonlyArray<string> }> =
+                    ast_.propertySignatures.flatMap(({ type, name }) =>
+                        traverseToBoundaries_(type, [...currentPath, name.toString()])
+                    );
                 return [...selfEmit, ...indexSignatureArrays, ...propertySignatureArrays];
             }
             // ---------------------------------------------
@@ -110,7 +130,7 @@ export const traverseToBoundaries = (
         }
     };
 
-    return traverseToBoundaries_(ast);
+    return traverseToBoundaries_(ast, []);
 };
 
 /**
@@ -121,8 +141,10 @@ export const traverseToBoundaries = (
 export const getInteriorNodes = (
     ast: AST.AST,
     options?: { ignoreTopLevelIdentifierBoundary?: boolean | undefined }
-): ReadonlyArray<AST.AST> => [
-    ...(options?.ignoreTopLevelIdentifierBoundary && isBoundary(ast) && !AST.isSuspend(ast) ? [ast] : []),
+): ReadonlyArray<AstNode> => [
+    ...(options?.ignoreTopLevelIdentifierBoundary && isBoundary(ast) && !AST.isSuspend(ast)
+        ? [{ ...ast, path: [] }]
+        : []),
     ...traverseToBoundaries(ast, options).filter(Predicate.not(isBoundary)),
 ];
 
@@ -131,7 +153,7 @@ export const getInteriorNodes = (
  * and other sections. Answers the question: "what are the boundary nodes at the
  * edge of the current boundary section?"
  */
-export const getPerimeterNodes = (ast: AST.AST): ReadonlyArray<AST.AST> =>
+export const getPerimeterNodes = (ast: AST.AST): ReadonlyArray<AstNode> =>
     Function.pipe(
         traverseToBoundaries(ast, { ignoreTopLevelIdentifierBoundary: true }),
         ReadonlyArray.filter(isBoundary),
@@ -142,29 +164,33 @@ export const getPerimeterNodes = (ast: AST.AST): ReadonlyArray<AST.AST> =>
 export const crossBoundary = (ast: AST.AST): AST.AST => (AST.isSuspend(ast) ? ast.f() : ast);
 
 /** Safely retrieves all nodes in the ast by traversing boundaries only once */
-export const getAllVertices = (ast: AST.AST): Set<AST.AST> => {
-    const vertices: Set<AST.AST> = new Set();
+export const getAllVertices = (ast: AST.AST): Set<AstNode> => {
+    const vertices: Set<AstNode> = new Set();
 
-    const vertices_ = (ast_: AST.AST): void => {
+    const vertices_ = (ast_: AST.AST, currentPath: ReadonlyArray<string>): void => {
         for (const vertex of getPerimeterNodes(ast_)) {
-            vertices.add(vertex);
+            vertices.add({ ...vertex, path: [...currentPath, ...vertex.path] });
         }
         for (const vertex of getInteriorNodes(ast_, { ignoreTopLevelIdentifierBoundary: true })) {
-            vertices.add(vertex);
+            vertices.add({ ...vertex, path: [...currentPath, ...vertex.path] });
         }
 
-        const boundariesGoingToCrossInto: AST.AST[] = Function.pipe(
+        const seenBoundaries: Set<AST.AST> = new Set([...vertices].map(({ path, ...rest }) => ({ ...rest })));
+        const boundariesGoingToCrossInto: Array<AstNode> = Function.pipe(
             getPerimeterNodes(ast_),
-            ReadonlyArray.map(crossBoundary),
-            ReadonlyArray.filter((boundary) => !vertices.has(boundary))
+            ReadonlyArray.map((node) => ({
+                ...crossBoundary(node),
+                path: [...currentPath, AST.getIdentifierAnnotation(node).pipe(Option.getOrElse(() => "BAD"))],
+            })),
+            ReadonlyArray.filter(({ path, ...boundary }) => !seenBoundaries.has(boundary))
         );
 
         for (const nextBoundary of boundariesGoingToCrossInto) {
-            vertices_(nextBoundary);
+            vertices_(nextBoundary, nextBoundary.path);
         }
     };
 
-    vertices_(ast);
+    vertices_(ast, []);
     return vertices;
 };
 
@@ -213,22 +239,22 @@ export const isSelfReferential = (ast: AST.AST): boolean => {
  */
 export const stronglyConnectedComponents = (
     ast: AST.AST
-): ReadonlyArray.NonEmptyReadonlyArray<ReadonlyArray.NonEmptyReadonlyArray<AST.AST>> => {
+): ReadonlyArray.NonEmptyReadonlyArray<ReadonlyArray.NonEmptyReadonlyArray<AstNode>> => {
     let index: number = 0;
-    const stack: Array<AST.AST> = [];
+    const stack: Array<AstNode> = [];
     const onStack: Map<AST.AST, boolean> = new Map<AST.AST, boolean>();
     const indices: Map<AST.AST, number> = new Map<AST.AST, number>();
     const lowLinks: Map<AST.AST, number> = new Map<AST.AST, number>();
     const stronglyConnected: Array<ReadonlyArray.NonEmptyReadonlyArray<AST.AST>> = [];
 
-    const tarjan = (vertex: AST.AST): void => {
+    const tarjan = (vertex: AstNode): void => {
         indices.set(vertex, index);
         lowLinks.set(vertex, index);
         index += 1;
         stack.push(vertex);
         onStack.set(vertex, true);
 
-        const boundariesGoingToCrossInto: ReadonlyArray<AST.AST> = getPerimeterNodes(
+        const boundariesGoingToCrossInto: ReadonlyArray<AstNode> = getPerimeterNodes(
             isBoundary(vertex) ? crossBoundary(vertex) : vertex
         );
 
@@ -242,14 +268,14 @@ export const stronglyConnectedComponents = (
         }
 
         if (lowLinks.get(vertex) === indices.get(vertex)) {
-            const generating: Array<AST.AST> = [];
-            let nextVertex: AST.AST;
+            const generating: Array<AstNode> = [];
+            let nextVertex: AstNode;
             do {
                 nextVertex = stack.pop()!;
                 onStack.set(nextVertex, false);
                 generating.push(nextVertex);
             } while (nextVertex !== vertex);
-            stronglyConnected.push(generating as ReadonlyArray.NonEmptyArray<AST.AST>);
+            stronglyConnected.push(generating as ReadonlyArray.NonEmptyArray<AstNode>);
         }
     };
 
@@ -260,13 +286,13 @@ export const stronglyConnectedComponents = (
     }
 
     return stronglyConnected as unknown as ReadonlyArray.NonEmptyReadonlyArray<
-        ReadonlyArray.NonEmptyReadonlyArray<AST.AST>
+        ReadonlyArray.NonEmptyReadonlyArray<AstNode>
     >;
 };
 
 /** A partition is a group of self referential sub trees */
 export type Partition = ReadonlyArray.NonEmptyReadonlyArray<{
-    readonly ast: AST.AST;
+    readonly ast: AstNode;
     readonly identifier: string;
 }>;
 
@@ -289,24 +315,26 @@ export const partition = (ast: AST.AST): ReadonlyArray.NonEmptyReadonlyArray<Par
                 stronglyConnectedComponent.some((node) => interiorNodes.includes(node)) ||
                 (stronglyConnectedComponent.length === 1 && AST.isSuspend(stronglyConnectedComponent[0]))
         ),
-        (_) => _ as unknown as ReadonlyArray.NonEmptyReadonlyArray<ReadonlyArray.NonEmptyReadonlyArray<AST.AST>>,
+        (_) => _ as unknown as ReadonlyArray.NonEmptyReadonlyArray<ReadonlyArray.NonEmptyReadonlyArray<AstNode>>,
         ReadonlyArray.map((stronglyConnectedComponent) =>
             stronglyConnectedComponent.length === 1 &&
             AST.isSuspend(stronglyConnectedComponent[0]) &&
             !isSelfReferential(stronglyConnectedComponent[0].f())
                 ? ([
                       {
-                          ast: stronglyConnectedComponent[0].f(),
+                          ast: { ...stronglyConnectedComponent[0].f(), path: [...stronglyConnectedComponent[0].path] },
                           identifier: AST.getIdentifierAnnotation(stronglyConnectedComponent[0].f()).pipe(
                               Option.getOrElse(() =>
-                                  AST.getIdentifierAnnotation(stronglyConnectedComponent[0]).pipe(Option.getOrThrow)
+                                  AST.getIdentifierAnnotation(stronglyConnectedComponent[0]).pipe(
+                                      Option.getOrElse(() => "BAD")
+                                  )
                               )
                           ),
                       },
                   ] as Partition)
                 : ReadonlyArray.map(stronglyConnectedComponent, (ast) => ({
                       ast,
-                      identifier: AST.getIdentifierAnnotation(ast).pipe(Option.getOrThrow),
+                      identifier: AST.getIdentifierAnnotation(ast).pipe(Option.getOrElse(() => "BAD")),
                   }))
         ),
         ReadonlyArray.dedupeWith(

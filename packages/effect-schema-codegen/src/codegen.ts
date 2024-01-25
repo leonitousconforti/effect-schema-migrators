@@ -14,12 +14,7 @@ export const codegen = (
 ): string => {
     const partitions: ReadonlyArray.NonEmptyReadonlyArray<Traverse.Partition> = Traverse.partition(ast);
 
-    const codegen_ = (ast_: AST.AST, generateInnerSuspends: boolean): string => {
-        // Short circuit base case
-        // if (Traverse.isBoundary(ast_) && !AST.isSuspend(ast_)) {
-        //     return AST.getIdentifierAnnotation(ast_).pipe(Option.getOrThrow);
-        // }
-
+    const codegen_ = (ast_: Traverse.AstNode, generateInnerSuspends: boolean): string => {
         return Function.pipe(
             Match.value(ast_),
             // ---------------------------------------------
@@ -65,7 +60,7 @@ export const codegen = (
             }),
             Match.when(AST.isDeclaration, () => "declaration"),
             Match.when(AST.isTemplateLiteral, () => "templateLiteral"),
-            Match.when(AST.isEnums, ({ enums: _enums }) => "enums"),
+            Match.when(AST.isEnums, ({ enums: _enums }) => `enums(${ast_.path.join("_")})`),
             Match.when(AST.isRefinement, () => {
                 if (AST.getTitleAnnotation(ast_).pipe(Option.isSome)) {
                     return `${AST.getTitleAnnotation(ast_).pipe(Option.getOrThrow)}`;
@@ -83,10 +78,10 @@ export const codegen = (
 
                 return generateInnerSuspends
                     ? `suspend(() => ${maybeIdentifierAnnotation.value})`
-                    : codegen_(f(), true);
+                    : codegen_(f() as Traverse.AstNode, true);
             }),
             Match.when(AST.isUnion, (union) => {
-                const nested: string[] = union.types.map((_) => codegen_(_, generateInnerSuspends));
+                const nested: string[] = union.types.map((_) => codegen_(_ as Traverse.AstNode, generateInnerSuspends));
                 return `union(${nested.join(", ")})`;
             }),
             Match.when(AST.isTuple, (tuple) => {
@@ -94,7 +89,7 @@ export const codegen = (
                     return `tuple()`;
                 }
                 const nestedRest: string[] = Option.getOrThrow(tuple.rest).map((_) =>
-                    codegen_(_, generateInnerSuspends)
+                    codegen_(_ as Traverse.AstNode, generateInnerSuspends)
                 );
                 return `array(${nestedRest.join(", ")})`;
             }),
@@ -104,7 +99,7 @@ export const codegen = (
                     code: string;
                 }> = propertySignatures.map((property) => ({
                     property,
-                    code: codegen_(property.type, generateInnerSuspends),
+                    code: codegen_(property.type as Traverse.AstNode, generateInnerSuspends),
                 }));
 
                 const allFields: string[] = asts.flatMap(
@@ -135,17 +130,24 @@ export const codegen = (
         .join("\n\n");
 
     const hoistedValues: string = Function.pipe(
-        Traverse.traverseToBoundaries(ast),
+        Traverse.getAllVertices(ast),
         ReadonlyArray.filterMap((node) => {
             if (AST.isUniqueSymbol(node)) {
                 const variableName: string = AST.getIdentifierAnnotation(node).pipe(Option.getOrThrow);
-                return Option.some(`export const ${variableName} = Symbol.for("${node.symbol.description}")`);
+                return Option.some(`export const "${variableName}" = Symbol.for("${node.symbol.description}")`);
+            } else if (AST.isEnums(node)) {
+                const variableName: string = node.path.join("_");
+                return Option.some(
+                    `export enum ${variableName} {\n${node.enums
+                        .map(([key, value]) => `${" ".repeat(indentationSize)}"${key}" = "${value}"`)
+                        .join(",\n")}\n}`
+                );
             }
+
             return Option.none();
         }),
         ReadonlyArray.join("\n\n")
     );
 
-    const header: string = `import * as ${schemaModuleImportIdentifier} from "effect/schema/Schema"\n\n`;
-    return String.isEmpty(hoistedValues) ? `${header}${output}` : `${header}${hoistedValues}\n\n${output}`;
+    return String.isEmpty(hoistedValues) ? output : `${hoistedValues}\n\n${output}`;
 };
